@@ -18,7 +18,7 @@ flowchart LR
   M2 -->|HTTP POST| P
   P -->|Push| A[Móvil Android]
   D[App LifeOs Detox] -->|Export CSV| U
-  D -->|Import/consulta (manual o futura integración)| N
+  D[App LifeOs Detox] --> X[Import/consulta: manual o futura integracion] --> N
 ````
 Flujo de datos (resumen)
 1. Usuario crea/edita Days y añade Habit Logs.
