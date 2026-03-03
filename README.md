@@ -24,27 +24,21 @@ Sistema personal “LifeOS” para organizar hábitos, gamificación (XP/HP/rach
    - `Dato importante`
    - Si el día es malo: `¿Por qué no?`
 4. Añadir tus **Habit Logs** del día (si existe log, cuenta como hecho).
-5. A las **23:30** (aprox.) el escenario **Cierre del día** verifica que el día existe y está completo/incompleto y avisa por ntfy.
+5. A las **06:00** (aprox.) en Notion se crea automaticamente el día con el formato de plantilla que he asignado, listo para ser editado.
 6. A las **23:45** (aprox.) el escenario **Rachas + bonus**:
+   - Comprueba que el día existe y tiene los campos mínimos rellenados
    - Comprueba hábitos “Cuenta racha”
    - Suma/resta HP
    - Incrementa/resetea racha de días completados
    - Calcula bonus XP por tramos
    - Si HP llega a 0 crea Recovery Quest y bloquea la racha hasta completarla
 
-> Nota: Make free solo permite 2 escenarios ON, por eso el sistema se concentra en estos dos.
+> Nota: Make free solo permite 2 escenarios ON (plan gratuito), por eso el sistema se concentra en uno.
 
-## Qué hacen los 2 escenarios de Make
-### 1) Cierre del día
-- Busca el Day de hoy por `DayKey` + `Player`.
-- Si existe:
-  - Si están rellenos los campos mínimos → marca “Completado” y notifica.
-  - Si faltan campos → marca “Incompleto” y notifica.
-- Si no existe:
-  - Crea el Day de hoy como “Incompleto” y notifica.
-
-### 2) Rachas + bonus (diario)
+## Qué hace el escenario de Make
+### 1) Rachas + bonus (diario)
 - Busca el Player.
+- Comprueba que el día existe y tiene los campos mínimos rellenados.
 - Si `HP <= 0`:
   - Comprueba si hay Recovery Quest completada (y la procesa) o avisa de que sigue en recovery.
 - Si `HP > 0`:
