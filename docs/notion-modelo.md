@@ -7,7 +7,7 @@
 - **Player**
 - **Recovery Quests**
 - **XP Ledger** (si se usa como histórico)
-- **Ocio** -> (Libros, Series, Media, Viajes, etc.)
+- **Ocio** -> (Libros, Media, Viajes, etc.)
 
 > Nota: los nombres exactos de propiedades pueden variar; este documento describe las “propiedades clave” que usa Make.
 
@@ -65,13 +65,18 @@ Propiedades clave:
 
 ## Qué significa “día completado”
 Un Day se considera **Completado** si:
-- `Nombre` tiene valor
 - `Fecha` tiene valor
 - `Dato importante` tiene valor
+- Habitos mínimos completados (Entrenar, estudiar, leer y avanzar en algún proyecto)
 
-Si falta alguno → **Incompleto** y debe rellenarse al menos:
+Un Day se considera → **Incompleto** si:
+- `Fecha` tiene valor
+- `Dato importante` tiene valor
+- Habitos mínimos **no** completados (Entrenar, estudiar, leer y avanzar en algún proyecto)
+
+Un Day se considera → **Fallado** si al menos uno de estos campos no tiene valor:
+- `Fecha`
 - `Dato importante`
-- `¿Por qué no?`
 
 ## Export y backup (procedimiento recomendado)
 1) En Notion, en la página raíz del sistema: `⋯` → **Exportar**.
