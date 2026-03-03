@@ -2,9 +2,8 @@
 
 ## Componentes
 - **Notion**: fuente de datos (BDs: Days, Habits, Habit Logs, Player, Recovery Quests, XP Ledger, ocio).
-- **Make (2 escenarios)**:
-  1) Cierre del día
-  2) Rachas + bonus (diario)
+- **Make (1 escenario)**:
+  - Rachas + bonus (diario)
 - **ntfy (ntfy.sh)**: canal de notificaciones push (HTTP).
 - **Android (LifeOs Detox)**: registro de tiempo por app/categoría + export CSV.
 
@@ -12,10 +11,8 @@
 ```mermaid
 flowchart LR
   U[Usuario] -->|Rellena día + logs| N[Notion]
-  M1[Make: Cierre del día] -->|Lee/Escribe| N
-  M2[Make: Rachas + bonus] -->|Lee/Escribe| N
+  M1[Make: Rachas + bonus] -->|Lee/Escribe| N
   M1 -->|HTTP POST| P[ntfy.sh]
-  M2 -->|HTTP POST| P
   P -->|Push| A[Móvil Android]
   D[App LifeOs Detox] -->|Export CSV| U
   D[App LifeOs Detox] --> X[Import/consulta: manual o futura integracion] --> N
