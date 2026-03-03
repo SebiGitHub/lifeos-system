@@ -19,8 +19,8 @@ flowchart LR
 ````
 Flujo de datos (resumen)
 1. Usuario crea/edita Days y añade Habit Logs.
-2. Make ejecuta escenarios programados:
-3. Valida el día y notifica (Cierre del día).
-4. Calcula rachas/HP/XP y gestiona recovery (Rachas + bonus).
+2. Make ejecuta el escenario programado:
+3. Valida el día y notifica.
+4. Calcula rachas/HP/XP y gestiona recovery.
 5. Las notificaciones se publican en ntfy y llegan al móvil.
 6. App Detox genera CSV para análisis/registro (manual por ahora).
