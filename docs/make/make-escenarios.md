@@ -1,4 +1,4 @@
-# Escenarios Make (2 activos por plan gratuito)
+# Escenarios Make (1 activos por plan gratuito)
 
 ## Convenciones
 - Se usa `DayKey` para buscar el día (más robusto que el título).
@@ -7,31 +7,10 @@
 
 ---
 
-## Escenario 1: Cierre del día
-**Objetivo:** asegurar que existe el Day de hoy y que está “Completado” o “Incompleto”, y notificar.
+## Escenario 1: Rachas + bonus (diario)
+**Objetivo:** comprobar la correcta existencia del día, calcular racha diaria + rachas individuales por hábito, HP, bonus XP y recovery quest.
 
-**Trigger:** programado diario (recomendado 23:30 Europe/Madrid) [AJUSTA a tu horario real en Make]
-
-**Entradas:**
-- Fecha actual
-- Player actual
-
-**Salidas:**
-- Day actualizado o creado
-- Notificación por ntfy
-
-**Reglas:**
-- Si no existe Day: se crea con Estado=Incompleto + campos mínimos.
-- Si existe Day:
-  - si mínimos completos → Estado=Completado y notifica “bien”
-  - si mínimos incompletos → Estado=Incompleto y notifica “rellena”
-
----
-
-## Escenario 2: Rachas + bonus (diario)
-**Objetivo:** calcular racha diaria + rachas individuales por hábito, HP, bonus XP y recovery quest.
-
-**Trigger:** programado diario (recomendado 23:45 Europe/Madrid) [AJUSTA a tu horario real en Make]
+**Trigger:** programado diario (recomendado 23:45 Europe/Madrid)
 
 **Entradas:**
 - Player (HP, HP Max, racha días)
