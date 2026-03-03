@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="LifeOsApp">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/app/LifeOsApp.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
