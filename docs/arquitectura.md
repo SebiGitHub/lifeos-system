@@ -11,11 +11,14 @@
 ```mermaid
 flowchart LR
   U[Usuario] -->|Rellena día + logs| N[Notion]
-  M1[Make: Rachas + bonus] -->|Lee/Escribe| N
-  M1 -->|HTTP POST| P[ntfy.sh]
-  P -->|Push| A[Móvil Android]
-  D[App LifeOs Detox] -->|Export CSV| U
-  D[App LifeOs Detox] --> X[Import/consulta: manual o futura integracion] --> N
+  N -->|Dispara/da pie a ejecución| M[Make: Rachas + bonus]
+  M -->|Lee/Escribe: actualiza rachas, XP, HP, estado día| N
+  M -->|HTTP POST: notificación| P[ntfy.sh]
+  P -->|Push al dispositivo| A[Dispositivo del usuario]
+  A -->|Consulta datos| N
+  A -->|Usa la app| D[App LifeOs Detox]
+  D -->|Exporta CSV: historial de uso (rango de tiempo)| C[CSV]
+  C -->|Se usa en Notion para evaluar desintoxicación digital| N
 ````
 Flujo de datos (resumen)
 1. Usuario crea/edita Days y añade Habit Logs.
