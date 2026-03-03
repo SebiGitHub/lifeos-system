@@ -1,0 +1,290 @@
+<html>
+<head>
+<title>RankingScreen.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #7a7e85;}
+.s4 { color: #2aacb8;}
+.s5 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+RankingScreen.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">sebi</span><span class="s2">.</span><span class="s1">lifeos</span><span class="s2">.</span><span class="s1">lifeosapp</span><span class="s2">.</span><span class="s1">ui</span>
+
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">animation</span><span class="s2">.</span><span class="s1">core</span><span class="s2">.</span><span class="s1">RepeatMode</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">animation</span><span class="s2">.</span><span class="s1">core</span><span class="s2">.</span><span class="s1">animateFloat</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">animation</span><span class="s2">.</span><span class="s1">core</span><span class="s2">.</span><span class="s1">infiniteRepeatable</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">animation</span><span class="s2">.</span><span class="s1">core</span><span class="s2">.</span><span class="s1">rememberInfiniteTransition</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">animation</span><span class="s2">.</span><span class="s1">core</span><span class="s2">.</span><span class="s1">tween</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">background</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">clickable</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">Arrangement</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">Box</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">Column</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">Row</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">Spacer</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">fillMaxWidth</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">height</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">padding</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">size</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">shape</span><span class="s2">.</span><span class="s1">RoundedCornerShape</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material</span><span class="s2">.</span><span class="s1">icons</span><span class="s2">.</span><span class="s1">outlined</span><span class="s2">.</span><span class="s1">EmojiEvents</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">Card</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">CardDefaults</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">MaterialTheme</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">Text</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">Composable</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">DisposableEffect</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">collectAsState</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">getValue</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">mutableStateOf</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">remember</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">setValue</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">Alignment</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">Modifier</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">draw</span><span class="s2">.</span><span class="s1">clip</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">graphics</span><span class="s2">.</span><span class="s1">graphicsLayer</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">text</span><span class="s2">.</span><span class="s1">font</span><span class="s2">.</span><span class="s1">FontWeight</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">text</span><span class="s2">.</span><span class="s1">style</span><span class="s2">.</span><span class="s1">TextAlign</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">unit</span><span class="s2">.</span><span class="s1">dp</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">platform</span><span class="s2">.</span><span class="s1">LocalContext</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">lifecycle</span><span class="s2">.</span><span class="s1">Lifecycle</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">lifecycle</span><span class="s2">.</span><span class="s1">LifecycleEventObserver</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">sebi</span><span class="s2">.</span><span class="s1">lifeos</span><span class="s2">.</span><span class="s1">lifeosapp</span><span class="s2">.</span><span class="s1">data</span><span class="s2">.</span><span class="s1">AppUsageAgg</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">sebi</span><span class="s2">.</span><span class="s1">lifeos</span><span class="s2">.</span><span class="s1">lifeosapp</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">components</span><span class="s2">.</span><span class="s1">AppIcon</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">sebi</span><span class="s2">.</span><span class="s1">lifeos</span><span class="s2">.</span><span class="s1">lifeosapp</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">components</span><span class="s2">.</span><span class="s1">ScreenTitle</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">sebi</span><span class="s2">.</span><span class="s1">lifeos</span><span class="s2">.</span><span class="s1">lifeosapp</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">components</span><span class="s2">.</span><span class="s1">SectionTitle</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">sebi</span><span class="s2">.</span><span class="s1">lifeos</span><span class="s2">.</span><span class="s1">lifeosapp</span><span class="s2">.</span><span class="s1">usage</span><span class="s2">.</span><span class="s1">UsageAccess</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">sebi</span><span class="s2">.</span><span class="s1">lifeos</span><span class="s2">.</span><span class="s1">lifeosapp</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">TimeFmt</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material</span><span class="s2">.</span><span class="s1">icons</span><span class="s2">.</span><span class="s1">Icons</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material</span><span class="s2">.</span><span class="s1">icons</span><span class="s2">.</span><span class="s1">filled</span><span class="s2">.</span><span class="s1">EmojiEvents</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">Icon</span>
+
+<span class="s1">@Composable</span>
+<span class="s0">fun </span><span class="s1">RankingScreen</span><span class="s2">(</span>
+    <span class="s1">vm: RankingViewModel</span><span class="s2">,</span>
+    <span class="s1">modifier: Modifier </span><span class="s2">= </span><span class="s1">Modifier</span>
+<span class="s2">) {</span>
+    <span class="s0">val </span><span class="s1">state by vm</span><span class="s2">.</span><span class="s1">state</span><span class="s2">.</span><span class="s1">collectAsState</span><span class="s2">()</span>
+    <span class="s0">val </span><span class="s1">ctx </span><span class="s2">= </span><span class="s1">LocalContext</span><span class="s2">.</span><span class="s1">current</span>
+
+    <span class="s0">var </span><span class="s1">hasPerm by remember </span><span class="s2">{ </span><span class="s1">mutableStateOf</span><span class="s2">(</span><span class="s1">UsageAccess</span><span class="s2">.</span><span class="s1">hasUsageAccess</span><span class="s2">(</span><span class="s1">ctx</span><span class="s2">)) }</span>
+
+    <span class="s3">// Refresca cuando vuelves a la app (por si concediste permiso)</span>
+    <span class="s0">val </span><span class="s1">lifecycleOwner </span><span class="s2">= </span><span class="s1">androidx</span><span class="s2">.</span><span class="s1">lifecycle</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">LocalLifecycleOwner</span><span class="s2">.</span><span class="s1">current</span>
+
+    <span class="s1">DisposableEffect</span><span class="s2">(</span><span class="s1">lifecycleOwner</span><span class="s2">) {</span>
+        <span class="s0">val </span><span class="s1">obs </span><span class="s2">= </span><span class="s1">LifecycleEventObserver </span><span class="s2">{ </span><span class="s1">_</span><span class="s2">, </span><span class="s1">event </span><span class="s2">-&gt;</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">event </span><span class="s2">== </span><span class="s1">Lifecycle</span><span class="s2">.</span><span class="s1">Event</span><span class="s2">.</span><span class="s1">ON_RESUME</span><span class="s2">) {</span>
+                <span class="s1">hasPerm </span><span class="s2">= </span><span class="s1">UsageAccess</span><span class="s2">.</span><span class="s1">hasUsageAccess</span><span class="s2">(</span><span class="s1">ctx</span><span class="s2">)</span>
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">hasPerm</span><span class="s2">) </span><span class="s1">vm</span><span class="s2">.</span><span class="s1">refresh</span><span class="s2">()</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s0">val </span><span class="s1">lifecycle </span><span class="s2">= </span><span class="s1">lifecycleOwner</span><span class="s2">.</span><span class="s1">lifecycle</span>
+        <span class="s1">lifecycle</span><span class="s2">.</span><span class="s1">addObserver</span><span class="s2">(</span><span class="s1">obs</span><span class="s2">)</span>
+        <span class="s1">onDispose </span><span class="s2">{ </span><span class="s1">lifecycle</span><span class="s2">.</span><span class="s1">removeObserver</span><span class="s2">(</span><span class="s1">obs</span><span class="s2">) }</span>
+    <span class="s2">}</span>
+
+
+    <span class="s1">Column</span><span class="s2">(</span><span class="s1">modifier </span><span class="s2">= </span><span class="s1">modifier</span><span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s4">16</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">)) {</span>
+        <span class="s1">ScreenTitle</span><span class="s2">(</span><span class="s5">&quot;Ranking&quot;</span><span class="s2">)</span>
+        <span class="s1">Spacer</span><span class="s2">(</span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">height</span><span class="s2">(</span><span class="s4">12</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">))</span>
+
+        <span class="s0">if </span><span class="s2">(!</span><span class="s1">hasPerm</span><span class="s2">) {</span>
+            <span class="s1">Card</span><span class="s2">(</span>
+                <span class="s1">colors </span><span class="s2">= </span><span class="s1">CardDefaults</span><span class="s2">.</span><span class="s1">cardColors</span><span class="s2">(</span>
+                    <span class="s1">containerColor </span><span class="s2">= </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">colorScheme</span><span class="s2">.</span><span class="s1">errorContainer</span>
+                <span class="s2">),</span>
+                <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">fillMaxWidth</span><span class="s2">()</span>
+            <span class="s2">) {</span>
+                <span class="s1">Column</span><span class="s2">(</span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s4">14</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">)) {</span>
+                    <span class="s1">Text</span><span class="s2">(</span>
+                        <span class="s1">text </span><span class="s2">= </span><span class="s5">&quot;Falta permiso de uso para calcular el ranking.&quot;</span><span class="s2">,</span>
+                        <span class="s1">fontWeight </span><span class="s2">= </span><span class="s1">FontWeight</span><span class="s2">.</span><span class="s1">SemiBold</span><span class="s2">,</span>
+                        <span class="s1">color </span><span class="s2">= </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">colorScheme</span><span class="s2">.</span><span class="s1">onErrorContainer</span>
+                    <span class="s2">)</span>
+                    <span class="s1">Spacer</span><span class="s2">(</span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">height</span><span class="s2">(</span><span class="s4">8</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">))</span>
+                    <span class="s1">Text</span><span class="s2">(</span>
+                        <span class="s1">text </span><span class="s2">= </span><span class="s5">&quot;Toca aquí para habilitarlo.&quot;</span><span class="s2">,</span>
+                        <span class="s1">color </span><span class="s2">= </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">colorScheme</span><span class="s2">.</span><span class="s1">onErrorContainer</span><span class="s2">,</span>
+                        <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span>
+                            <span class="s2">.</span><span class="s1">clip</span><span class="s2">(</span><span class="s1">RoundedCornerShape</span><span class="s2">(</span><span class="s4">10</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">))</span>
+                            <span class="s2">.</span><span class="s1">background</span><span class="s2">(</span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">colorScheme</span><span class="s2">.</span><span class="s1">onErrorContainer</span><span class="s2">.</span><span class="s1">copy</span><span class="s2">(</span><span class="s1">alpha </span><span class="s2">= </span><span class="s4">0.12f</span><span class="s2">))</span>
+                            <span class="s2">.</span><span class="s1">clickable </span><span class="s2">{ </span><span class="s1">UsageAccess</span><span class="s2">.</span><span class="s1">openUsageAccessSettings</span><span class="s2">(</span><span class="s1">ctx</span><span class="s2">) }</span>
+                            <span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s1">horizontal </span><span class="s2">= </span><span class="s4">10</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">, </span><span class="s1">vertical </span><span class="s2">= </span><span class="s4">8</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">)</span>
+                            <span class="s2">.</span><span class="s1">fillMaxWidth</span><span class="s2">()</span>
+                    <span class="s2">)</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+            <span class="s0">return</span>
+        <span class="s2">}</span>
+
+        <span class="s0">val </span><span class="s1">topDay </span><span class="s2">= </span><span class="s1">remember</span><span class="s2">(</span><span class="s1">state</span><span class="s2">.</span><span class="s1">topDay</span><span class="s2">) { </span><span class="s1">state</span><span class="s2">.</span><span class="s1">topDay</span><span class="s2">.</span><span class="s1">map</span><span class="s2">(</span><span class="s1">::toRankItem</span><span class="s2">) }</span>
+        <span class="s0">val </span><span class="s1">topYear </span><span class="s2">= </span><span class="s1">remember</span><span class="s2">(</span><span class="s1">state</span><span class="s2">.</span><span class="s1">topYear</span><span class="s2">) { </span><span class="s1">state</span><span class="s2">.</span><span class="s1">topYear</span><span class="s2">.</span><span class="s1">map</span><span class="s2">(</span><span class="s1">::toRankItem</span><span class="s2">) }</span>
+
+        <span class="s1">SectionTitle</span><span class="s2">(</span><span class="s5">&quot;Top de hoy&quot;</span><span class="s2">)</span>
+        <span class="s1">Podium</span><span class="s2">(</span><span class="s1">top3 </span><span class="s2">= </span><span class="s1">topDay</span><span class="s2">)</span>
+
+        <span class="s1">Spacer</span><span class="s2">(</span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">height</span><span class="s2">(</span><span class="s4">18</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">))</span>
+
+        <span class="s1">SectionTitle</span><span class="s2">(</span><span class="s5">&quot;Top del año&quot;</span><span class="s2">)</span>
+        <span class="s1">Podium</span><span class="s2">(</span><span class="s1">top3 </span><span class="s2">= </span><span class="s1">topYear</span><span class="s2">)</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+
+<span class="s1">private data </span><span class="s0">class </span><span class="s1">RankItem</span><span class="s2">(</span>
+    <span class="s0">val </span><span class="s1">packageName: String</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">label: String</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">totalMs: Long</span>
+<span class="s2">)</span>
+
+<span class="s1">private </span><span class="s0">fun </span><span class="s1">toRankItem</span><span class="s2">(</span><span class="s1">row: AppUsageAgg</span><span class="s2">)</span><span class="s1">: RankItem </span><span class="s2">= </span><span class="s1">RankItem</span><span class="s2">(</span>
+    <span class="s1">packageName </span><span class="s2">= </span><span class="s1">row</span><span class="s2">.</span><span class="s1">packageName</span><span class="s2">,</span>
+    <span class="s1">label </span><span class="s2">= </span><span class="s1">row</span><span class="s2">.</span><span class="s1">label ?: row</span><span class="s2">.</span><span class="s1">packageName</span><span class="s2">,</span>
+    <span class="s1">totalMs </span><span class="s2">= </span><span class="s1">row</span><span class="s2">.</span><span class="s1">totalMs</span>
+<span class="s2">)</span>
+
+<span class="s1">@Composable</span>
+<span class="s1">private </span><span class="s0">fun </span><span class="s1">Podium</span><span class="s2">(</span><span class="s1">top3: List</span><span class="s2">&lt;</span><span class="s1">RankItem</span><span class="s2">&gt;) {</span>
+    <span class="s0">val </span><span class="s1">items </span><span class="s2">= </span><span class="s1">remember</span><span class="s2">(</span><span class="s1">top3</span><span class="s2">) {</span>
+        <span class="s0">val </span><span class="s1">list </span><span class="s2">= </span><span class="s1">top3</span><span class="s2">.</span><span class="s1">take</span><span class="s2">(</span><span class="s4">3</span><span class="s2">).</span><span class="s1">toMutableList</span><span class="s2">()</span>
+        <span class="s0">while </span><span class="s2">(</span><span class="s1">list</span><span class="s2">.</span><span class="s1">size </span><span class="s2">&lt; </span><span class="s4">3</span><span class="s2">) </span><span class="s1">list</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">RankItem</span><span class="s2">(</span><span class="s5">&quot;&quot;</span><span class="s2">, </span><span class="s5">&quot;&quot;</span><span class="s2">, </span><span class="s4">0L</span><span class="s2">))</span>
+        <span class="s1">list</span>
+    <span class="s2">}</span>
+
+    <span class="s0">val </span><span class="s1">pulse </span><span class="s2">= </span><span class="s1">rememberInfiniteTransition</span><span class="s2">(</span><span class="s1">label </span><span class="s2">= </span><span class="s5">&quot;pulse&quot;</span><span class="s2">)</span>
+        <span class="s2">.</span><span class="s1">animateFloat</span><span class="s2">(</span>
+            <span class="s1">initialValue </span><span class="s2">= </span><span class="s4">0.98f</span><span class="s2">,</span>
+            <span class="s1">targetValue </span><span class="s2">= </span><span class="s4">1.02f</span><span class="s2">,</span>
+            <span class="s1">animationSpec </span><span class="s2">= </span><span class="s1">infiniteRepeatable</span><span class="s2">(</span>
+                <span class="s1">animation </span><span class="s2">= </span><span class="s1">tween</span><span class="s2">(</span><span class="s4">900</span><span class="s2">),</span>
+                <span class="s1">repeatMode </span><span class="s2">= </span><span class="s1">RepeatMode</span><span class="s2">.</span><span class="s1">Reverse</span>
+            <span class="s2">),</span>
+            <span class="s1">label </span><span class="s2">= </span><span class="s5">&quot;pulseFloat&quot;</span>
+        <span class="s2">).</span><span class="s1">value</span>
+
+    <span class="s3">// Podio tipo &quot;escalón&quot; (3-1-2) con trofeo arriba en el centro</span>
+    <span class="s1">Box</span><span class="s2">(</span>
+        <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span>
+            <span class="s2">.</span><span class="s1">fillMaxWidth</span><span class="s2">()</span>
+            <span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s1">top </span><span class="s2">= </span><span class="s4">10</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">)</span>
+    <span class="s2">) {</span>
+        <span class="s1">Row</span><span class="s2">(</span>
+            <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span>
+                <span class="s2">.</span><span class="s1">fillMaxWidth</span><span class="s2">()</span>
+                <span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s1">top </span><span class="s2">= </span><span class="s4">24</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">),</span>
+            <span class="s1">horizontalArrangement </span><span class="s2">= </span><span class="s1">Arrangement</span><span class="s2">.</span><span class="s1">spacedBy</span><span class="s2">(</span><span class="s4">0</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">),</span>
+            <span class="s1">verticalAlignment </span><span class="s2">= </span><span class="s1">Alignment</span><span class="s2">.</span><span class="s1">Bottom</span>
+        <span class="s2">) {</span>
+            <span class="s1">PodiumStep</span><span class="s2">(</span>
+                <span class="s1">position </span><span class="s2">= </span><span class="s4">3</span><span class="s2">,</span>
+                <span class="s1">item </span><span class="s2">= </span><span class="s1">items</span><span class="s2">.</span><span class="s1">getOrNull</span><span class="s2">(</span><span class="s4">2</span><span class="s2">) </span><span class="s1">?: RankItem</span><span class="s2">(</span><span class="s5">&quot;&quot;</span><span class="s2">, </span><span class="s5">&quot;&quot;</span><span class="s2">, </span><span class="s4">0L</span><span class="s2">),</span>
+                <span class="s1">stepHeight </span><span class="s2">= </span><span class="s4">86</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">,</span>
+                <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">weight</span><span class="s2">(</span><span class="s4">1f</span><span class="s2">),</span>
+                <span class="s1">scale </span><span class="s2">= </span><span class="s4">1f</span>
+            <span class="s2">)</span>
+            <span class="s1">PodiumStep</span><span class="s2">(</span>
+                <span class="s1">position </span><span class="s2">= </span><span class="s4">1</span><span class="s2">,</span>
+                <span class="s1">item </span><span class="s2">= </span><span class="s1">items</span><span class="s2">.</span><span class="s1">getOrNull</span><span class="s2">(</span><span class="s4">0</span><span class="s2">) </span><span class="s1">?: RankItem</span><span class="s2">(</span><span class="s5">&quot;&quot;</span><span class="s2">, </span><span class="s5">&quot;&quot;</span><span class="s2">, </span><span class="s4">0L</span><span class="s2">),</span>
+                <span class="s1">stepHeight </span><span class="s2">= </span><span class="s4">118</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">,</span>
+                <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">weight</span><span class="s2">(</span><span class="s4">1.15f</span><span class="s2">),</span>
+                <span class="s1">scale </span><span class="s2">= </span><span class="s1">pulse</span>
+            <span class="s2">)</span>
+            <span class="s1">PodiumStep</span><span class="s2">(</span>
+                <span class="s1">position </span><span class="s2">= </span><span class="s4">2</span><span class="s2">,</span>
+                <span class="s1">item </span><span class="s2">= </span><span class="s1">items</span><span class="s2">.</span><span class="s1">getOrNull</span><span class="s2">(</span><span class="s4">1</span><span class="s2">) </span><span class="s1">?: RankItem</span><span class="s2">(</span><span class="s5">&quot;&quot;</span><span class="s2">, </span><span class="s5">&quot;&quot;</span><span class="s2">, </span><span class="s4">0L</span><span class="s2">),</span>
+                <span class="s1">stepHeight </span><span class="s2">= </span><span class="s4">98</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">,</span>
+                <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">weight</span><span class="s2">(</span><span class="s4">1f</span><span class="s2">),</span>
+                <span class="s1">scale </span><span class="s2">= </span><span class="s4">1f</span>
+            <span class="s2">)</span>
+        <span class="s2">}</span>
+
+        <span class="s1">Icon</span><span class="s2">(</span>
+            <span class="s1">imageVector </span><span class="s2">= </span><span class="s1">Icons</span><span class="s2">.</span><span class="s1">Filled</span><span class="s2">.</span><span class="s1">EmojiEvents</span><span class="s2">,</span>
+            <span class="s1">contentDescription </span><span class="s2">= </span><span class="s0">null</span><span class="s2">,</span>
+            <span class="s1">tint </span><span class="s2">= </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">colorScheme</span><span class="s2">.</span><span class="s1">tertiary</span><span class="s2">,</span>
+            <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span>
+                <span class="s2">.</span><span class="s1">align</span><span class="s2">(</span><span class="s1">Alignment</span><span class="s2">.</span><span class="s1">TopCenter</span><span class="s2">)</span>
+                <span class="s2">.</span><span class="s1">size</span><span class="s2">(</span><span class="s4">42</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">)</span>
+        <span class="s2">)</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+
+<span class="s1">@Composable</span>
+<span class="s1">private </span><span class="s0">fun </span><span class="s1">PodiumStep</span><span class="s2">(</span>
+    <span class="s1">position: Int</span><span class="s2">,</span>
+    <span class="s1">item: RankItem</span><span class="s2">,</span>
+    <span class="s1">stepHeight: androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">unit</span><span class="s2">.</span><span class="s1">Dp</span><span class="s2">,</span>
+    <span class="s1">modifier: Modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">,</span>
+    <span class="s1">scale: Float </span><span class="s2">= </span><span class="s4">1f</span>
+<span class="s2">) {</span>
+    <span class="s0">val </span><span class="s2">(</span><span class="s1">bg</span><span class="s2">, </span><span class="s1">fg</span><span class="s2">) = </span><span class="s0">when </span><span class="s2">(</span><span class="s1">position</span><span class="s2">) {</span>
+        <span class="s4">1 </span><span class="s2">-&gt; </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">colorScheme</span><span class="s2">.</span><span class="s1">primary to MaterialTheme</span><span class="s2">.</span><span class="s1">colorScheme</span><span class="s2">.</span><span class="s1">onPrimary</span>
+        <span class="s4">2 </span><span class="s2">-&gt; </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">colorScheme</span><span class="s2">.</span><span class="s1">tertiary to MaterialTheme</span><span class="s2">.</span><span class="s1">colorScheme</span><span class="s2">.</span><span class="s1">onTertiary</span>
+        <span class="s0">else </span><span class="s2">-&gt; </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">colorScheme</span><span class="s2">.</span><span class="s1">secondary to MaterialTheme</span><span class="s2">.</span><span class="s1">colorScheme</span><span class="s2">.</span><span class="s1">onSecondary</span>
+    <span class="s2">}</span>
+    <span class="s0">val </span><span class="s1">cap </span><span class="s2">= </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">colorScheme</span><span class="s2">.</span><span class="s1">surfaceVariant</span><span class="s2">.</span><span class="s1">copy</span><span class="s2">(</span><span class="s1">alpha </span><span class="s2">= </span><span class="s4">0.75f</span><span class="s2">)</span>
+
+    <span class="s1">Column</span><span class="s2">(</span>
+        <span class="s1">modifier </span><span class="s2">= </span><span class="s1">modifier</span><span class="s2">,</span>
+        <span class="s1">horizontalAlignment </span><span class="s2">= </span><span class="s1">Alignment</span><span class="s2">.</span><span class="s1">CenterHorizontally</span>
+    <span class="s2">) {</span>
+        <span class="s1">Box</span><span class="s2">(</span>
+            <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span>
+                <span class="s2">.</span><span class="s1">fillMaxWidth</span><span class="s2">()</span>
+                <span class="s2">.</span><span class="s1">height</span><span class="s2">(</span><span class="s1">stepHeight</span><span class="s2">)</span>
+                <span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s1">horizontal </span><span class="s2">= </span><span class="s4">2</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">)</span>
+                <span class="s2">.</span><span class="s1">graphicsLayer </span><span class="s2">{</span>
+                    <span class="s1">scaleX </span><span class="s2">= </span><span class="s1">scale</span>
+                    <span class="s1">scaleY </span><span class="s2">= </span><span class="s1">scale</span>
+                <span class="s2">}</span>
+                <span class="s2">.</span><span class="s1">clip</span><span class="s2">(</span><span class="s1">RoundedCornerShape</span><span class="s2">(</span><span class="s4">14</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">))</span>
+                <span class="s2">.</span><span class="s1">background</span><span class="s2">(</span><span class="s1">bg</span><span class="s2">)</span>
+        <span class="s2">) {</span>
+            <span class="s3">// Tapa superior (gris) como la imagen</span>
+            <span class="s1">Box</span><span class="s2">(</span>
+                <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span>
+                    <span class="s2">.</span><span class="s1">fillMaxWidth</span><span class="s2">()</span>
+                    <span class="s2">.</span><span class="s1">height</span><span class="s2">(</span><span class="s4">12</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">)</span>
+                    <span class="s2">.</span><span class="s1">background</span><span class="s2">(</span><span class="s1">cap</span><span class="s2">),</span>
+                <span class="s1">contentAlignment </span><span class="s2">= </span><span class="s1">Alignment</span><span class="s2">.</span><span class="s1">Center</span>
+            <span class="s2">) {</span>
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">item</span><span class="s2">.</span><span class="s1">packageName</span><span class="s2">.</span><span class="s1">isNotBlank</span><span class="s2">()) {</span>
+                    <span class="s1">AppIcon</span><span class="s2">(</span><span class="s1">packageName </span><span class="s2">= </span><span class="s1">item</span><span class="s2">.</span><span class="s1">packageName</span><span class="s2">, </span><span class="s1">size </span><span class="s2">= </span><span class="s4">18</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">)</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+
+            <span class="s3">// Número centrado</span>
+            <span class="s1">Text</span><span class="s2">(</span>
+                <span class="s1">text </span><span class="s2">= </span><span class="s1">position</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">(),</span>
+                <span class="s1">color </span><span class="s2">= </span><span class="s1">fg</span><span class="s2">,</span>
+                <span class="s1">style </span><span class="s2">= </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">typography</span><span class="s2">.</span><span class="s1">titleLarge</span><span class="s2">,</span>
+                <span class="s1">fontWeight </span><span class="s2">= </span><span class="s1">FontWeight</span><span class="s2">.</span><span class="s1">ExtraBold</span><span class="s2">,</span>
+                <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">align</span><span class="s2">(</span><span class="s1">Alignment</span><span class="s2">.</span><span class="s1">Center</span><span class="s2">)</span>
+            <span class="s2">)</span>
+        <span class="s2">}</span>
+
+        <span class="s1">Spacer</span><span class="s2">(</span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">height</span><span class="s2">(</span><span class="s4">8</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">))</span>
+
+        <span class="s3">// Abajo del podio: TIEMPO (no el nombre)</span>
+        <span class="s1">Text</span><span class="s2">(</span>
+            <span class="s1">text </span><span class="s2">= </span><span class="s0">if </span><span class="s2">(</span><span class="s1">item</span><span class="s2">.</span><span class="s1">totalMs </span><span class="s2">&gt; </span><span class="s4">0L</span><span class="s2">) </span><span class="s1">TimeFmt</span><span class="s2">.</span><span class="s1">msToHuman</span><span class="s2">(</span><span class="s1">item</span><span class="s2">.</span><span class="s1">totalMs</span><span class="s2">) </span><span class="s0">else </span><span class="s5">&quot;--&quot;</span><span class="s2">,</span>
+            <span class="s1">style </span><span class="s2">= </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">typography</span><span class="s2">.</span><span class="s1">bodySmall</span><span class="s2">,</span>
+            <span class="s1">color </span><span class="s2">= </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">colorScheme</span><span class="s2">.</span><span class="s1">onSurface</span><span class="s2">.</span><span class="s1">copy</span><span class="s2">(</span><span class="s1">alpha </span><span class="s2">= </span><span class="s4">0.75f</span><span class="s2">),</span>
+            <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">fillMaxWidth</span><span class="s2">(),</span>
+            <span class="s1">textAlign </span><span class="s2">= </span><span class="s1">TextAlign</span><span class="s2">.</span><span class="s1">Center</span>
+        <span class="s2">)</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>
