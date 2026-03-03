@@ -17,7 +17,7 @@ flowchart LR
   P -->|Push al dispositivo| A[Dispositivo del usuario]
   A -->|Consulta datos| N
   A -->|Usa la app| D[App LifeOs Detox]
-  D -->|Exporta CSV: historial de uso (rango de tiempo)| C[CSV]
+  D -->|Exporta CSV: historial de uso rango de tiempo| C[CSV]
   C -->|Se usa en Notion para evaluar desintoxicación digital| N
 ````
 Flujo de datos (resumen)
