@@ -1,0 +1,26 @@
+# IntelliJ / Android Studio
+*.iml
+.idea/
+.gradle/
+.kotlin/
+
+# Local config
+local.properties
+
+# Build outputs
+/build/
+/app/build/
+**/build/
+
+# Native / generated
+.externalNativeBuild/
+.cxx/
+captures/
+exportToHTML/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Nested git repos (por seguridad)
+**/.git
