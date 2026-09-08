@@ -1,150 +1,186 @@
-# Escenarios Make (1 activos por plan gratuito)
+# Escenario Make — Rachas + bonus (diario)
 
-## Qué hace exactamente
-### Ruta A — “Recovery completada” (cuando hay quest pendiente)
+> Estado documentado: 8 de septiembre de 2026.
 
-Objetivo: si el jugador ya estaba a HP <= 0 y existe una Recovery Quest completada y no procesada, entonces:
+## Escenario activo
 
-- Restaura HP del jugador a HP Max.
-- Marca la Recovery Quest como Procesada.
-- Crea un registro en XP Ledger (tipo “Recovery”).
-- Notifica por ntfy.sh.
+| Campo | Valor |
+|---|---|
+| Nombre | `Rachas + bonus (diario) Sebi (copy) CHatgpt` |
+| Scenario ID | `7309406` |
+| Estado | Activo |
+| Horario | Todos los días a las `00:10`, zona `Europe/Madrid` |
+| Día procesado | El día natural anterior |
+| Conexión Notion | `Conexion Make-Notion (Sebi)` |
+| Workspace | `LifeOS 2026 - Sebi` |
+| Escenario anterior | `4804265`, inactivo |
 
-Módulos clave que aparecen en el blueprint:
-- 15 — Notion Player (Search Objects): obtiene el Player (p.ej. por Nombre = Sebi).
-- 16 — Router: decide ruta en función de HP.
-- 17 — Notion Recovery Quests (Search Objects): busca recovery completada y no procesada.
-- 19 — Notion Player (Update a Database Item): HP = HP Max.
-- 20 — Notion Recovery Quests (Update a Data Source Item): Procesada = true.
-- 374 — Notion XP Ledger (Create a Page): log de “Recovery”.
-- 22 — HTTP (Make a request): notificación a ntfy.
+El escenario procesa una sola vez el cierre diario de LifeOS, actualiza rachas, HP y XP, y gestiona Recovery Quests. La propiedad `Rachas procesadas` del Day actúa como protección contra ejecuciones duplicadas.
 
-### Ruta B — “Cierre del día” (rachas + bonus)
+## Reglas actuales
 
-Objetivo: procesar un Day de Notion (el día que el usuario ha rellenado), y aplicar:
-- Día completado si se han cumplido los hábitos mínimos (los que tienen Cuenta racha = true).
-- Día incompleto si falta alguno.
-- Actualización de racha general (Player) y HP.
-- Actualización de racha por hábito (Habits), con anti-duplicado por fecha.
-- XP Ledger:
-  - “Hábito” por cada Habit Log del día.
-  - “Bonus” si cumple mínimos.
-  - “No Hábito”/“Penalización” si no cumple mínimos.
-- Notificación por ntfy.
+- Solo los hábitos con `Activo = true` y `Cuenta racha = true` son obligatorios.
+- Actualmente, solo **Gym** cuenta para la racha. Read, Study y Proyecto/Trabajo no cuentan.
+- Un día se completa cuando todos los hábitos obligatorios tienen al menos un Habit Log único relacionado con ese Day.
+- Los identificadores nulos de Habit Logs no cuentan como hábitos completados.
+- Si falta algún hábito obligatorio:
+  - el Day pasa a `Incompleto`;
+  - la racha general pasa a 0;
+  - se restan 5 HP y 5 XP por cada hábito obligatorio ausente;
+  - se resetea la racha del hábito obligatorio no realizado;
+  - si el HP llega a 0, se crea una Recovery Quest.
+- Si se cumplen todos:
+  - el Day pasa a `Completado`;
+  - la racha general aumenta en 1;
+  - se recuperan 3 HP por hábito obligatorio completado, sin superar `HP Max`;
+  - se crea XP por cada Habit Log y un bonus de 5 XP por hábito obligatorio.
+- Las rachas por hábito usan `StreakUpdatedFor` para no actualizarse dos veces para la misma fecha.
 
-Validaciones (antes de tocar nada)
-1. Existe el Day
-- Si no existe: notifica y termina.
-2. El Day está “relleno” y no se ha procesado ya
-- Comprueba Fecha existe.
-- Comprueba Dato importante (array) > 0.
-- Comprueba Rachas procesadas = false.
-- Si falla: notifica (p.ej. “faltan campos obligatorios”) y termina.
+## Flujo principal
 
-En el blueprint aparecen validadores de este estilo:
-- 129 / 188 (cuando el Day se maneja como 182)
-- 282 / 283 (cuando el Day se maneja como 24)
-- 314 — HTTP (Make a request): notificación “LifeOS Dia fallado” (faltan campos obligatorios)
+### 1. Player y Recovery Quest
 
-## Lógica de “mínimos” (Cuenta racha)
-### Cómo se obtiene el “RequiredCount” (hábitos mínimos)
-- Buscar en Habits: Activo = true y Cuenta racha = true.
-  - Ejemplo en blueprint:
-    - 239 — RequiredCount (Notion Habits - Search Objects)
-    - 284 — Notion Habits (Search Objects) (otra parte equivalente)
-- Contar cuántos hábitos devuelve esa búsqueda (agregadores tipo “BasicAggregator”):
-  - 285 (para 284)
+- `15` — Busca el Player `Sebi`.
+- `434` — If/Else según `HP <= 0`.
+- `17` — Busca una Recovery Quest completada y no procesada.
+- `439` — If/Else según exista una Recovery Quest.
+- `19` — Recupera HP hasta `HP Max`.
+- `20` — Marca la Recovery Quest como procesada.
+- `374` — Crea el movimiento de XP de tipo `Recovery`.
+- `449` y `446` — Reúnen las ramas If/Else.
+- `454`, `443`, `435` y `457` — Controlan la variable `canProcess`.
 
-### Cómo se obtiene lo “hecho” (hoy)
-Hay 2 ideas distintas en el escenario:
-- Habit Logs del día (todos):
-  - 247 (si el Day es 182)
-  - 290 (si el Day es 24)
+Si el jugador sigue en Recovery y no hay una misión válida, `canProcess = false` y no se procesa el cierre diario.
 
-- Habit Logs del día que cuentan para racha (usando una fórmula tipo Cuenta racha (calc) en Habit Logs):
-  - 286 — Notion Habit Logs (Search Objects) filtrando Cuenta racha (calc) = true
-  - 287 — BasicAggregator para contar esos logs
+### 2. Selección y validación del Day
 
-## Rama ÉXITO (cumple mínimos)
-Condición (concepto): “nº de hábitos mínimos == nº de hábitos (únicos) completados que cuentan para racha” y RequiredCount > 0.
-Acciones típicas:
+- `182` — Busca el Day del día anterior por `DayKey` y Player.
+- `129` — Separa “Day encontrado” y “Day inexistente”.
+- `188` — Separa Day válido, ya procesado o incompleto en campos obligatorios.
+- `189` y `427` — Marcan el Day como fallado y aplican la penalización de campos obligatorios.
+- `181`, `238` y `237` — Envían las notificaciones correspondientes.
 
-1. Marcar el Day como completado + marcar “Rachas procesadas”.
-2. Subir racha general del Player (+ curación HP).
-  - En el blueprint aparece:
-    - 292 — Notion Player (Update a Database Item):
-      - Racha +⬆ días completados = Racha + 1
-      - HP = min(HP Max; HP + (nº Habit Logs del día * 2))
-      - (en esa parte se usa el nº de bundles de 290)
-3. Actualizar racha de cada hábito completado (independiente de “Cuenta racha”), con anti-duplicado por fecha:
-- Se usa StreakUpdatedFor para evitar sumar 2 veces el mismo día.
-- Ejemplo de filtro que aparece:
-  - 294 — Notion Habits (Update) con condición StreakUpdatedFor != today
-4. XP Ledger:
-- “Hábito completado!” por cada log:
-  - 295 — Notion XP Ledger (Create a Page) (en la rama que usa 290)
-  - 252 — Notion XP Ledger (Create a Page) (en la rama que usa 247)
-- “Mínimos superados!” (Bonus):
-  - 293 — Notion XP Ledger (Create a Page) (bonus con 5 * nº de logs)
-  - 253 — Notion XP Ledger (Create a Page) (otra variante equivalente)
-5. Notificación de éxito:
-- Suele existir un HTTP MakeRequest dedicado (p.ej. “Racha mantenida”).
+Un Day válido necesita:
 
-## Rama FALLO (NO cumple mínimos)
-Condición (concepto): “faltan hábitos mínimos”.
-Acciones típicas:
-1. Marcar el Day como incompleto + marcar “Rachas procesadas”.
-2. Reset de racha general (Player) + penalización de HP.
-3. Reset de racha SOLO de hábitos NO completados ese día (no “los que no cuentan para racha”).
-  - La forma correcta en Make (sin magia) es:
-    - Iterar hábitos activos y, por cada hábito, comprobar si existe al menos 1 Habit Log del día con ese hábito.
-    - Si NO existe → resetear ese hábito.
-En tu escenario esto aparece con este patrón:
-- 334 — Notion Habits (Search Objects): lista de hábitos a evaluar (normalmente Activo = true)
-- Iterator sobre esos hábitos
-- 257 — “Todos los hábitos hechos ese día” (Notion Habit Logs - Search Objects):
-  - filtro: Habit Logs-Days contains DayID AND Hábito contains HabitID
-  - limit = 1 (solo queremos saber si existe)
-- Router para separar:
-  - HECHO (existe log)
-  - NO HECHO (no existe log)
-- 359 — Notion Habits (Update): reset (Streak = 0 + StreakUpdatedFor = today) para el NO HECHO
-4. Recovery Quest (solo si tras la penalización el Player queda con HP <= 0)
-- En el blueprint aparece una parte específica:
-  - 264 — Router
-  - 265 — Notion Habits (Search Objects) filtrado por HP <= 0 (condición basada en el Player ya actualizado)
-  - (y módulos posteriores de creación/notificación)
-5. Notificación de fallo:
-- 304 — HTTP (Make a request) (en tu blueprint hay una notificación tipo “Perdiste la racha!”)
-- 314 — HTTP (Make a request) se usa para “Día fallado” por validación (faltan campos), no por “no cumplir mínimos”.
+1. `Fecha`.
+2. `Dato importante` no vacío.
+3. `Rachas procesadas = false`.
 
-## Requisitos en Notion (mínimo viable)
-### Bases de datos implicadas (según IDs vistos en el blueprint)
-- Player (Data source): 2f69a682-2540-8055-9c64-000bb2dc4a32
-  - Campos usados en Make: HP, HP Max, Racha +⬆ días completados
-- Days (Data source): 2f69a682-2540-8081-a866-000b822c2fef
-  - Campos usados: Fecha, Dato importante, Rachas procesadas, DayKey, relación con Player
-- Habits (Data source): 2f69a682-2540-80f0-9dfe-000b29abbaca
-  - Campos usados: Activo, Cuenta racha, Streak, MAX Streak, StreakUpdatedFor
-- Habit Logs (Data source): 2f69a682-2540-8032-91ff-000b6f640689
-  - Campos usados: relación Habit Logs-Days, relación Hábito, y (si existe) fórmula Cuenta racha (calc)
-- XP Ledger (Database): 2f69a682-2540-80f5-95de-ff9903177c8a
-- Recovery Quests (Data source): 2f69a682-2540-807a-8816-000bb2720ffb
-Importante: en Make usa módulos Notion de tipo Data Source (no “Database (Legacy)”). Si cambias el Data source seleccionado, hay que revisar y remapear campos.
+### 3. Conteo de mínimos
 
-## Notificaciones (ntfy.sh)
-- El escenario envía notificaciones mediante HTTP POST.
-- En el blueprint aparece el topic:
-  - https://ntfy.sh/sebi-lifeos-9f3k2x (ej. módulo 314)
-En Android:
-1. Instala la app de ntfy.
-2. Suscríbete al topic sebi-lifeos-9f3k2x.
-3. Verás notificaciones con Title, Click y Priority según el caso.
+- `239` — Busca Habits con `Activo = true` y `Cuenta racha = true`.
+- `275` — Agrega los hábitos obligatorios.
+- `240` — Busca Habit Logs del Day cuyo `Cuenta racha (calc) = true`.
+- `277` — Agrega `id` y `habitId`.
+- `241` — Separa día completo e incompleto.
 
-## Cómo probar (sin romper nada)
-1. Crea/elige un Day de prueba en Notion y rellena:
-- Fecha
-- Dato importante (que no quede vacío)
-- Rachas procesadas = false
-2. Crea Habit Logs para ese Day:
-- Asegúrate de que cada log tiene relación al Day (Habit Logs-Days) y al Habit
+Conteo robusto de hábitos realizados:
+
+```make
+length(remove(distinct(map(277.array; "habitId")); null))
+```
+
+Cuando una búsqueda de Notion devuelve cero resultados, Make produce un paquete con `habitId = null`. Sin eliminar ese valor, se contabilizaba falsamente un hábito completado.
+
+### 4. Día completado
+
+- `245` — Marca el Day como `Completado`.
+- `253` — Crea el bonus.
+- `248` — Aumenta racha general y cura HP.
+- `331` — Marca `Rachas procesadas = true`.
+- `247` y `252` — Crean XP por cada Habit Log.
+- `281` y `250` — Actualizan la racha de cada hábito.
+- `254` — Notificación de éxito.
+
+Condición:
+
+```make
+length(remove(distinct(map(277.array; "habitId")); null))
+= 275.__IMTAGGLENGTH__
+```
+
+Además, `275.__IMTAGGLENGTH__ > 0`.
+
+### 5. Día incompleto
+
+- `246` — Marca el Day como `Incompleto`.
+- `334` — Obtiene los hábitos obligatorios activos.
+- `257` — Comprueba si existe un Habit Log del hábito en el Day.
+- `338` y `339` — Separan hábitos hechos y no hechos.
+- `333` — Resetea la racha del hábito no realizado.
+- `423`, `425` y `426` — Conceden XP y actualizan la racha del hábito realizado.
+- `258` — Calcula `missingCount`.
+- `261` — Crea la penalización.
+- `260` — Reduce HP y pone la racha general a 0.
+- `271` — Marca `Rachas procesadas = true`.
+- `264`–`269` — Gestionan HP, Recovery Quest y notificaciones.
+
+Cálculo actual:
+
+```make
+max(
+  0;
+  275.__IMTAGGLENGTH__
+  - length(remove(distinct(map(277.array; "habitId")); null))
+)
+```
+
+## IDs de Notion actuales
+
+| Base de datos | Data source ID |
+|---|---|
+| Player (Sebi) | `bd29a682-2540-8241-b253-872641c6304e` |
+| Days (Sebi) | `4979a682-2540-8346-9d18-07b56160b3ff` |
+| Habits (Sebi) | `feb9a682-2540-82df-a0e6-87373bf3f27e` |
+| Habit Logs (Sebi) | `7ba9a682-2540-8313-b6dc-8734f2862c49` |
+| XP Ledger (Sebi) | `c219a682-2540-83d2-abe9-07c6b9e285f1` |
+| Recovery Quests (Sebi) | `7a99a682-2540-8270-9c49-8712df60509c` |
+
+Los módulos `374`, `253`, `252`, `423`, `261` y `266` relacionan los registros con el Player localizado al comienzo mediante `{{15.id}}`, evitando IDs rígidos heredados del workspace anterior.
+
+## Correcciones aplicadas el 08/09/2026
+
+1. Sustitución de ramas duplicadas por If/Else con Merge.
+2. Corrección de los Merge `449` y `446`.
+3. Variable `canProcess` para bloquear el cierre durante una Recovery Quest pendiente.
+4. Procesamiento del día anterior con zona `Europe/Madrid`.
+5. Eliminación del límite de 10 resultados en búsquedas relevantes.
+6. Conteo de hábitos únicos y exclusión explícita de `habitId = null`.
+7. Corrección de filtros de día completo/incompleto y `missingCount`.
+8. Sustitución de IDs antiguos del Player por `{{15.id}}`.
+9. Solo Gym conserva `Cuenta racha = true`.
+10. Neutralización de tres movimientos de XP incorrectos del 07/09, conservando trazabilidad.
+11. Comprobación de conexiones, módulos huérfanos y ejecuciones incompletas.
+
+## Pruebas verificadas
+
+### Caso sin Gym
+
+Fecha procesada: `07/09/2026`.
+
+- Ejecución `d986c8cd362744f0aba2e008d4051a02`: correcta.
+- Day: `Incompleto`.
+- `missingCount = 1`.
+- Gym: `Streak = 0`, `MAX Streak = 24`.
+- Player: `HP = 20`, racha general `0`.
+- Penalización: `-5 XP`, relacionada con Player y Day.
+
+### Anti-duplicado
+
+- Ejecución `794d4938e0094ad5b7b34c14b5da6c8b`: correcta.
+- Detectó `Rachas procesadas = true`.
+- No repitió penalización, cambios de HP ni actualizaciones de racha.
+
+## Habit Logs que desaparecen
+
+No existe ningún módulo en este escenario que elimine, archive o quite relaciones de Habit Logs. El escenario original está inactivo y la aplicación Android de este repositorio no contiene llamadas a Notion.
+
+Con la evidencia disponible, la desaparición no puede atribuirse a este escenario. Las causas posibles restantes son una eliminación o archivo manual, otra integración externa o una vista filtrada de Notion.
+
+## Archivos de esta carpeta
+
+- `make-escenario.md`: documentación funcional vigente.
+- `scenario-7309406-current.json`: snapshot técnico legible de la configuración verificada.
+- `Rachas + bonus (diario).blueprint.json`: exportación histórica anterior. **No representa el escenario activo actual y no debe importarse como copia vigente.**
+
+Para obtener un blueprint importable actualizado hay que exportar el escenario `7309406` desde el editor de Make y reemplazar manualmente el archivo histórico.
