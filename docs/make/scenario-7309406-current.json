@@ -1,0 +1,222 @@
+{
+  "schemaVersion": 1,
+  "snapshotType": "documentation",
+  "importableMakeBlueprint": false,
+  "generatedAt": "2026-09-08T18:04:00Z",
+  "scenario": {
+    "id": 7309406,
+    "name": "Rachas + bonus (diario) Sebi (copy) CHatgpt",
+    "status": "active",
+    "lastEdit": "2026-09-08T18:02:19.679Z",
+    "teamId": 931276,
+    "previousScenario": {
+      "id": 4804265,
+      "status": "inactive"
+    },
+    "trigger": {
+      "kind": "scheduled",
+      "moduleId": 15,
+      "scheduling": {
+        "type": "daily",
+        "time": "00:10",
+        "timezone": "Europe/Madrid"
+      },
+      "processesDate": "previous natural day"
+    },
+    "connection": {
+      "app": "notion",
+      "label": "Conexion Make-Notion (Sebi)",
+      "statusAtVerification": "ok"
+    }
+  },
+  "notion": {
+    "workspace": "LifeOS 2026 - Sebi",
+    "dataSources": {
+      "player": "bd29a682-2540-8241-b253-872641c6304e",
+      "days": "4979a682-2540-8346-9d18-07b56160b3ff",
+      "habits": "feb9a682-2540-82df-a0e6-87373bf3f27e",
+      "habitLogs": "7ba9a682-2540-8313-b6dc-8734f2862c49",
+      "xpLedger": "c219a682-2540-83d2-abe9-07c6b9e285f1",
+      "recoveryQuests": "7a99a682-2540-8270-9c49-8712df60509c"
+    },
+    "requiredHabitConfiguration": {
+      "Gym": {
+        "active": true,
+        "countsForStreak": true
+      },
+      "Read": {
+        "active": true,
+        "countsForStreak": false
+      },
+      "Study": {
+        "active": true,
+        "countsForStreak": false
+      },
+      "Proyecto/Trabajo": {
+        "active": true,
+        "countsForStreak": false
+      }
+    }
+  },
+  "flow": {
+    "playerAndRecovery": {
+      "modules": [
+        15,
+        434,
+        17,
+        439,
+        19,
+        20,
+        374,
+        22,
+        454,
+        23,
+        443,
+        449,
+        435,
+        446,
+        457
+      ],
+      "controlVariable": "canProcess"
+    },
+    "daySelectionAndValidation": {
+      "modules": [
+        182,
+        129,
+        188,
+        189,
+        427,
+        181,
+        238,
+        237
+      ],
+      "requirements": [
+        "Fecha exists",
+        "Dato importante is not empty",
+        "Rachas procesadas equals false"
+      ]
+    },
+    "streakCounting": {
+      "modules": [
+        239,
+        275,
+        240,
+        277,
+        241
+      ],
+      "requiredCount": "275.__IMTAGGLENGTH__",
+      "doneUniqueCount": "length(remove(distinct(map(277.array; \"habitId\")); null))"
+    },
+    "completedDay": {
+      "modules": [
+        245,
+        253,
+        248,
+        331,
+        254,
+        247,
+        252,
+        281,
+        250
+      ],
+      "condition": "doneUniqueCount = requiredCount AND requiredCount > 0",
+      "effects": {
+        "dayStatus": "Completado",
+        "generalStreak": "+1",
+        "hp": "+3 per completed required habit, capped at HP Max",
+        "bonusXp": "+5 per completed required habit"
+      }
+    },
+    "incompleteDay": {
+      "modules": [
+        246,
+        332,
+        334,
+        257,
+        338,
+        339,
+        333,
+        423,
+        425,
+        426,
+        258,
+        261,
+        260,
+        271,
+        263,
+        264,
+        265,
+        266,
+        267,
+        268,
+        269
+      ],
+      "condition": "doneUniqueCount < requiredCount AND requiredCount > 0",
+      "missingCount": "max(0; requiredCount - doneUniqueCount)",
+      "effects": {
+        "dayStatus": "Incompleto",
+        "generalStreak": 0,
+        "hp": "-5 per missing required habit, minimum 0",
+        "penaltyXp": "-5 per missing required habit",
+        "recoveryQuest": "created when resulting HP <= 0"
+      }
+    }
+  },
+  "dynamicPlayerReference": {
+    "expression": "{{15.id}}",
+    "modules": [
+      374,
+      253,
+      252,
+      423,
+      261,
+      266
+    ]
+  },
+  "fixesAppliedOn": "2026-09-08",
+  "fixes": [
+    "Replaced duplicated branches with If/Else and Merge",
+    "Corrected Merge modules 449 and 446",
+    "Added canProcess guard for Recovery Quest state",
+    "Standardized previous-day calculations to Europe/Madrid",
+    "Removed relevant ten-result limits",
+    "Excluded null habitId values from completed-habit counts",
+    "Corrected completed/incomplete filters and missingCount",
+    "Replaced inherited Player page IDs with {{15.id}}",
+    "Left only Gym with Cuenta racha enabled",
+    "Neutralized three invalid XP Ledger entries from 2026-09-07"
+  ],
+  "verification": {
+    "incompleteCase": {
+      "executionId": "d986c8cd362744f0aba2e008d4051a02",
+      "status": "success",
+      "processedDate": "2026-09-07",
+      "expectedAndObserved": {
+        "dayStatus": "Incompleto",
+        "missingCount": 1,
+        "gymStreak": 0,
+        "gymMaxStreak": 24,
+        "playerHp": 20,
+        "playerGeneralStreak": 0,
+        "penaltyXp": -5
+      }
+    },
+    "idempotency": {
+      "executionId": "794d4938e0094ad5b7b34c14b5da6c8b",
+      "status": "success",
+      "observed": "No duplicate penalty, HP change or streak update"
+    },
+    "finalHealth": {
+      "active": true,
+      "incompleteExecutions": 0,
+      "waitingOnIncompleteExecutions": false,
+      "connectionStatus": "ok",
+      "moduleIssues": []
+    }
+  },
+  "knownLimitations": [
+    "This file is a technical snapshot, not an importable Make blueprint.",
+    "The cause of disappearing Habit Logs was not attributable to scenario 7309406.",
+    "Export scenario 7309406 from the Make editor to refresh the historical blueprint JSON."
+  ]
+}
